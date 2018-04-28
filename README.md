@@ -107,7 +107,7 @@ Retrieve values of individual sliders by calling:
 
 You should see something like this:
 
-![Circular sliders](/images/circular-sliders-rails.png)
+![Circular sliders](/vendor/assets/images/circular-sliders-rails.png)
 
 <!-- ## Development -->
 
