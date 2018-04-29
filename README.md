@@ -83,23 +83,23 @@ Use jQuery to add circular sliders to the canvas area. Pass slider settings as o
 
 Slider settings:
 
-| Name            | Type   | Default                  | Description                                                            |
-| --------------- | ------ | ------------------------ | ---------------------------------------------------------------------- |
-| name            | String | Slider n                 | Name your slider                                                       |
-| centerX         | Float  | Center of Canvas         | Specify the x value of where you'd like the center of the slider to be |
-| centerY         | Float  | Center of Canvas         | Specify the y value of where you'd like the center of the slider to be |
-| color           | String | "#0000FF"                | Specify the color of the arc fill                                      |
-| minValue        | Float  | 0                        | The minimum value of your slider                                       |
-| maxValue        | Float  | 0                        | The maximum value of your slider                                       |
-| step            | Float  | 10                       | The amount the value is incremented                                    |
-| units           | String | ""                       | The units your value is displayed in                                   |
-| radius          | Float  | 40 or (prevRadius +≈ 15) | The radius of your slider                                              |
-| lineDashLength  | Float  | 5                        | The arc length of each dash of your slider                             |
-| lineDashSpacing | Float  | 5                        | The arc spacing length of each dash of your slider                     |
-| lineWidth       | Float  | 5                        | The arc spacing length of each dash of your slider                     |
-| strokeColor     | String | "#D3D3D3"                | The color of the dashes on the slider                                  |
-| ballColor       | String | "#000000"                | The color of the slider ball                                           |
-| textColor       | String | "#000000"                | The color of the slider label (name, value and units)                  |
+| Name            | Type   | Default                             | Description                                            |
+| --------------- | ------ | ----------------------------------- | ------------------------------------------------------ |
+| name            | String | Slider n                            | Name your slider                                       |
+| centerX         | Float  | Center of canvas or previous slider | Specify the x value for the center of the slider       |
+| centerY         | Float  | Center of canvas or previous slider | Specify the y value for the center of the slider       |
+| color           | String | "#0000FF"                           | Specify the color of the arc fill                      |
+| minValue        | Float  | 0                                   | The minimum value of your slider                       |
+| maxValue        | Float  | 0                                   | The maximum value of your slider                       |
+| step            | Float  | 10                                  | The amount the value is incremented                    |
+| units           | String | ""                                  | The units your value is displayed in                   |
+| radius          | Float  | 40 or previous slider radius +≈ 15  | The radius of your slider                              |
+| lineDashLength  | Float  | 5                                   | The arc length of each dash of your slider             |
+| lineDashSpacing | Float  | 5                                   | The arc spacing length of each dash of your slider     |
+| lineWidth       | Float  | 5                                   | The arc spacing length of each dash of your slider     |
+| strokeColor     | String | "#D3D3D3"                           | The color of the dashes on the slider                  |
+| ballColor       | String | "#000000"                           | The color of the slider ball                           |
+| textColor       | String | "#000000"                           | The color of the slider label (name, value and units)  |
 
 Retrieve values of individual sliders by calling:
 
