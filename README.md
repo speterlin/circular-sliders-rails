@@ -96,7 +96,7 @@ Slider settings:
 | radius          | Float  | 40 or previous slider radius +≈ 15  | The radius of your slider                              |
 | lineDashLength  | Float  | 5                                   | The arc length of each dash of your slider             |
 | lineDashSpacing | Float  | 5                                   | The arc spacing length of each dash of your slider     |
-| lineWidth       | Float  | 5                                   | The arc spacing length of each dash of your slider     |
+| lineWidth       | Float  | 5                                   | The slider and arc width                               |
 | strokeColor     | String | "#D3D3D3"                           | The color of the dashes on the slider                  |
 | ballColor       | String | "#000000"                           | The color of the slider ball                           |
 | textColor       | String | "#000000"                           | The color of the slider label (name, value and units)  |

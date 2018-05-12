@@ -77,7 +77,6 @@
     this.value = settings.minValue;
     // ball starts at top of circle which is - pi / 2
     this.angle = -(Math.PI / 2);
-    // maybe refactor
     this.ball = new Ball (settings);
   }
 
@@ -86,7 +85,6 @@
     // ball starts at top of circle
     this.y = sliderSettings.centerY - sliderSettings.radius;
     this.radius = sliderSettings.lineWidth;
-    // this is not editable option but could be
     this.color = sliderSettings.ballColor;
   }
 
@@ -130,7 +128,8 @@
     ctx.arc(slider.centerX, slider.centerY, slider.radius, -(Math.PI / 2), endAngle, false);
     ctx.lineWidth = slider.lineWidth;
     ctx.strokeStyle = slider.color;
-    ctx.setLineDash([0, 0]);
+    // have to set lineDashLength to a number > 0 for arc to be completely full in browsers like Safari, set it arbitrarily to 10 here
+    ctx.setLineDash([10, 0]);
     ctx.stroke();
     ctx.closePath();
   }
