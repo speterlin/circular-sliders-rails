@@ -90,12 +90,10 @@ Slider settings:
 | centerY         | Float  | Center of canvas or previous slider | Specify the y value for the center of the slider       |
 | color           | String | "#0000FF"                           | Specify the color of the arc fill                      |
 | minValue        | Float  | 0                                   | The minimum value of your slider                       |
-| maxValue        | Float  | 0                                   | The maximum value of your slider                       |
+| maxValue        | Float  | 100                                 | The maximum value of your slider                       |
 | step            | Float  | 10                                  | The amount the value is incremented                    |
 | units           | String | ""                                  | The units your value is displayed in                   |
 | radius          | Float  | 40 or previous slider radius +≈ 15  | The radius of your slider                              |
-| lineDashLength  | Float  | 5                                   | The arc length of each dash of your slider             |
-| lineDashSpacing | Float  | 5                                   | The arc spacing length of each dash of your slider     |
 | lineWidth       | Float  | 5                                   | The slider and arc width                               |
 | strokeColor     | String | "#D3D3D3"                           | The color of the dashes on the slider                  |
 | ballColor       | String | "#000000"                           | The color of the slider ball                           |

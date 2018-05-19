@@ -27,12 +27,10 @@
       centerY: slidersCenterY,
       color: "#0000FF",
       minValue: 0,
-      maxValue: 1000,
+      maxValue: 100,
       step: 10,
       units: "",
       radius: 40,
-      lineDashLength: 5,
-      lineDashSpacing: 5,
       lineWidth: 5,
       strokeColor: "#D3D3D3",
       ballColor: "#000000",
@@ -69,12 +67,11 @@
     this.step = settings.step;
     this.units = settings.units;
     this.radius = settings.radius;
-    this.lineDashLength = settings.lineDashLength;
-    this.lineDashSpacing = settings.lineDashSpacing;
     this.lineWidth = settings.lineWidth;
     this.strokeColor = settings.strokeColor;
     this.textColor = settings.textColor;
     this.value = settings.minValue;
+    this.range = settings.maxValue - settings.minValue;
     // ball starts at top of circle which is - pi / 2
     this.angle = -(Math.PI / 2);
     this.ball = new Ball (settings);
@@ -103,7 +100,11 @@
     ctx.arc(slider.centerX, slider.centerY, slider.radius, 0, Math.PI*2, false);
     ctx.lineWidth = slider.lineWidth;
     ctx.strokeStyle = slider.strokeColor;
-    ctx.setLineDash([slider.lineDashLength, slider.lineDashSpacing]);
+    var sliderCircumference = 2 * Math.PI * slider.radius;
+    // maybe refactor, I like 2/3 and 1/3 for now
+    var sliderLineDashLength = (2 / 3) * (sliderCircumference / (slider.range / slider.step));
+    var sliderLineDashSpacing = (1 / 3) * (sliderCircumference / (slider.range / slider.step));
+    ctx.setLineDash([sliderLineDashLength, sliderLineDashSpacing]);
     ctx.stroke();
     ctx.closePath();
   }
@@ -135,6 +136,7 @@
   }
 
   function drawText (slider, count) {
+    // maybe refactor and make this editable
     ctx.font = "12px Arial";
     ctx.fillStyle = slider.textColor;
     ctx.fillText(slider.name + ": " + slider.value + " " + slider.units, 10, 20*(count+1));
@@ -147,7 +149,7 @@
     if (dx < 0) { slider.angle += Math.PI };
     slider.ball.x = slider.centerX + slider.radius * Math.cos(slider.angle);
     slider.ball.y = slider.centerY + slider.radius * Math.sin(slider.angle);
-    slider.value = slider.minValue + (slider.maxValue - slider.minValue) * ((slider.angle + (Math.PI/2)) / (2 * Math.PI) );
+    slider.value = slider.minValue + slider.range * ((slider.angle + (Math.PI/2)) / (2 * Math.PI) );
     // refactor - bug if give step value below 0.5
     var roundedValue = round(slider.value, slider.step);
     elem.data(slider.name.split(" ").join("_"), roundedValue);
@@ -159,9 +161,9 @@
     e.preventDefault();
     isMouseDown = true;
     setOffset();
-    // $(window).scrollLeft() and $(window).scrollTop() to account for page scrolling
-    mouseX = parseInt(e.clientX - offset[0] + $(window).scrollLeft());
-    mouseY = parseInt(e.clientY - offset[1] + $(window).scrollTop());
+    // $(window).scrollLeft() and $(window).scrollTop() to account for page scrolling, maybe refactor and make mouseX and mouseY global
+    var mouseX = parseInt(e.clientX - offset[0] + $(window).scrollLeft());
+    var mouseY = parseInt(e.clientY - offset[1] + $(window).scrollTop());
     for (var i = 0; i < sliders.length; i++) {
       if (onBall(mouseX, mouseY, sliders[i])) {
         selectedSlider = sliders[i];
@@ -180,8 +182,8 @@
     }
     e.preventDefault();
     setOffset();
-    mouseX = parseInt(e.clientX - offset[0] + $(window).scrollLeft());
-    mouseY = parseInt(e.clientY - offset[1] + $(window).scrollTop());
+    var mouseX = parseInt(e.clientX - offset[0] + $(window).scrollLeft());
+    var mouseY = parseInt(e.clientY - offset[1] + $(window).scrollTop());
     moveBall(mouseX, mouseY, selectedSlider);
   }
 
