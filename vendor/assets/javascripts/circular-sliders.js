@@ -101,7 +101,7 @@
     ctx.lineWidth = slider.lineWidth;
     ctx.strokeStyle = slider.strokeColor;
     var sliderCircumference = 2 * Math.PI * slider.radius;
-    // maybe refactor, I like 2/3 and 1/3 for now
+    // maybe refactor, I like 2/3 and 1/3 for now, maybe move this to #Slider so don't have to calculate every time
     var sliderLineDashLength = (2 / 3) * (sliderCircumference / (slider.range / slider.step));
     var sliderLineDashSpacing = (1 / 3) * (sliderCircumference / (slider.range / slider.step));
     ctx.setLineDash([sliderLineDashLength, sliderLineDashSpacing]);
