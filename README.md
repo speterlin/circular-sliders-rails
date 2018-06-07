@@ -60,8 +60,7 @@ Use jQuery to add circular sliders to the canvas area. Pass slider settings as o
           maxValue: 250,
           step: 2,
           units: "cm",
-          radius: 100,
-          strokeColor: "#D3D3D3",
+          radius: 100
         },
         {
           name: "Weight",
@@ -73,8 +72,7 @@ Use jQuery to add circular sliders to the canvas area. Pass slider settings as o
           centerX: 600,
           step: 5,
           units: "kg",
-          lineWidth: 10,
-          strokeColor: "#D3D3D3",
+          lineWidth: 10
         },
         {
           name: "Waist size",
@@ -104,7 +102,7 @@ Use jQuery to add circular sliders to the canvas area. Pass slider settings as o
           name: "Desired price",
           priceUnits: "£",
           textColor: "#0000FF",
-          step: 5,
+          step: 5
         }
       ]);
     </script>
