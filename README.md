@@ -133,7 +133,7 @@ Retrieve values of individual sliders by calling:
 
 You should see something like this (with the above options):
 
-![Circular sliders](/vendor/assets/images/circular-sliders-rails.png)
+![Circular sliders](../assets/circular-sliders-rails.png?raw=true)
 
 <!-- ## Development -->
 
