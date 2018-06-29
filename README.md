@@ -2,6 +2,8 @@
 
 A Ruby on Rails gem which allows you to draw concentric responsive circular sliders with jQuery. Requires jQuery.
 
+![Circular sliders](../assets/circular-sliders-rails.png?raw=true)
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -28,7 +30,7 @@ Create a canvas element in the view where you would like the sliders to go:
 
     <canvas id="sliders" width="1200" height="300" style="border:1px solid;"></canvas>
 
-Use jQuery to add circular sliders to the canvas area. Pass slider settings as objects in an array. Create multiple sliders or just a single slider.
+Use jQuery to add circular sliders to the canvas area. Pass slider settings as objects in an array. Create multiple sliders or just a single slider. With the settings below you should see something like the picture above.
 
     <script>
       $('#sliders').sliders([
@@ -130,10 +132,6 @@ Slider settings:
 Retrieve values of individual sliders by calling:
 
     $('#sliders').data('slider_name');
-
-You should see something like this (with the above options):
-
-![Circular sliders](../assets/circular-sliders-rails.png?raw=true)
 
 <!-- ## Development -->
 
