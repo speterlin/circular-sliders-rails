@@ -74,7 +74,8 @@ Use jQuery to add circular sliders to the canvas area. Pass slider settings as o
           centerX: 600,
           step: 5,
           units: "kg",
-          lineWidth: 10
+          lineWidth: 10,
+          gradientFill: false
         },
         {
           name: "Waist size",
