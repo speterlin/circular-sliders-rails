@@ -2,7 +2,7 @@
 
 A Ruby on Rails gem which allows you to draw concentric responsive circular sliders with jQuery. Requires jQuery.
 
-![Circular sliders](../assets/circular-sliders-rails.gif)
+![Circular sliders](../assets/circular-sliders-rails.gif?raw=true)
 
 ## Installation
 
