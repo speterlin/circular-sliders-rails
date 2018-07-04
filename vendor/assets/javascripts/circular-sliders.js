@@ -1,55 +1,53 @@
 (function ( $ ) {
+  'use strict';
 
+  // private global variables
   var isMouseDown = false;
   var selectedSlider = {};
   var elem = null;
   // if multiple canvases / containers would need to refactor
   var canvas = null
   var ctx = null;
-  // don't like having these as global variables
   var sliders = [];
-  // [x,y]
-  var offset = [0,0];
+  var offset = [0,0]; // [x,y]
+  var defaults = {
+    name: "Slider",
+    type: "Plain",
+    color: "#0000FF",
+    minValue: 0,
+    maxValue: 100,
+    step: 10,
+    units: "",
+    priceUnits: "",
+    radius: 40,
+    lineWidth: 5,
+    strokeColor: "#D3D3D3",
+    ballColor: "#000000",
+    textColor: "#000000",
+    gradientFill: true,
+    legend: true
+  }
 
   $.fn.sliders = function(slidersOptions) {
     elem = this;
     // maybe refactor, add .each in case there are multiple selected canvases
     canvas = this[0];
     ctx = canvas.getContext("2d");
+    [defaults.centerX, defaults.centerY] = [canvas.width / 2, canvas.height / 2]
     setOffset();
-    var defaults = {
-      name: "Slider",
-      type: "Plain",
-      centerX: canvas.width / 2,
-      centerY: canvas.height / 2,
-      color: "#0000FF",
-      minValue: 0,
-      maxValue: 100,
-      step: 10,
-      units: "",
-      priceUnits: "",
-      radius: 40,
-      lineWidth: 5,
-      strokeColor: "#D3D3D3",
-      ballColor: "#000000",
-      textColor: "#000000",
-      gradientFill: true
-    }
     // maybe refactor, add container option if there are multiple containers, could allow multiple containers / canvases in the future
     for (var i = 0; i < slidersOptions.length; i++) {
       defaults.name = "Slider " + (i + 1);
-      // maybe refactor, want previous centerX, centerY, and lineWidth and 10 pixels spacing between sliders
       if (i > 0) {
         defaults.centerX = sliders[i-1].centerX;
         defaults.centerY = sliders[i-1].centerY;
-        defaults.radius = sliders[i-1].radius + sliders[i-1].lineWidth + 5;
+        defaults.radius = sliders[i-1].radius + sliders[i-1].lineWidth + defaults.lineWidth;
       }
       var sliderSettings = $.extend( {}, defaults, slidersOptions[i] )
       sliders.push(new Slider (sliderSettings));
       // maybe refactor, visible if have it like this: elem.attr('data-'+sliders[i].name.split(" ").join("_"), sliders[i].minValue);
       elem.data(sliders[i].name.split(" ").join("_"), sliders[i].minValue);
     }
-    // maybe refactor, first slider by default selected
     selectedSlider = sliders[0];
     draw();
     canvas.addEventListener("mousedown", handleMouseDown);
@@ -75,6 +73,7 @@
     this.value = settings.minValue;
     this.range = settings.maxValue - settings.minValue;
     this.gradientFill = settings.gradientFill;
+    this.legend = settings.legend;
     // ball starts at top of circle which is - pi / 2
     this.angle = -(Math.PI / 2);
     this.ball = new Ball (settings);
@@ -94,7 +93,7 @@
       drawSlider(sliders[i]);
       drawBall(sliders[i]);
       drawArc(sliders[i]);
-      drawText(sliders[i], i);
+      if (sliders[i].legend) { drawText(sliders[i], i); }
     }
   }
 
