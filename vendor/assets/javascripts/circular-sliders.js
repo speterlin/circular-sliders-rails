@@ -6,10 +6,9 @@
   var selectedSlider = {};
   var elem = null;
   // if multiple canvases / containers would need to refactor
-  var canvas = null
+  var canvas = null;
   var ctx = null;
   var sliders = [];
-  var offset = [0,0]; // [x,y]
   var defaults = {
     name: "Slider",
     type: "Plain",
@@ -33,8 +32,7 @@
     // maybe refactor, add .each in case there are multiple selected canvases
     canvas = this[0];
     ctx = canvas.getContext("2d");
-    [defaults.centerX, defaults.centerY] = [canvas.width / 2, canvas.height / 2]
-    setOffset();
+    [defaults.centerX, defaults.centerY] = [canvas.width / 2, canvas.height / 2];
     // maybe refactor, add container option if there are multiple containers, could allow multiple containers / canvases in the future
     for (var i = 0; i < slidersOptions.length; i++) {
       defaults.name = "Slider " + (i + 1);
@@ -43,7 +41,7 @@
         defaults.centerY = sliders[i-1].centerY;
         defaults.radius = sliders[i-1].radius + sliders[i-1].lineWidth + defaults.lineWidth;
       }
-      var sliderSettings = $.extend( {}, defaults, slidersOptions[i] )
+      var sliderSettings = $.extend( {}, defaults, slidersOptions[i] );
       sliders.push(new Slider (sliderSettings));
       // maybe refactor, visible if have it like this: elem.attr('data-'+sliders[i].name.split(" ").join("_"), sliders[i].minValue);
       elem.data(sliders[i].name.split(" ").join("_"), sliders[i].minValue);
@@ -74,7 +72,7 @@
     this.range = settings.maxValue - settings.minValue;
     this.gradientFill = settings.gradientFill;
     this.legend = settings.legend;
-    // ball starts at top of circle which is - pi / 2
+    // ball starts at top of circle which is - π / 2
     this.angle = -(Math.PI / 2);
     this.ball = new Ball (settings);
   }
@@ -87,12 +85,12 @@
     this.color = sliderSettings.ballColor;
   }
 
-  function draw () {
+  function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (var i = 0; i < sliders.length; i++) {
       drawSlider(sliders[i]);
-      drawBall(sliders[i]);
       drawArc(sliders[i]);
+      drawBall(sliders[i]);
       if (sliders[i].legend) { drawText(sliders[i], i); }
     }
   }
@@ -106,7 +104,7 @@
     var sliderLineDashSpacing = (1 / 3) * (sliderCircumference / (slider.range / slider.step));
     ctx.setLineDash([sliderLineDashLength, sliderLineDashSpacing]);
     ctx.beginPath();
-    ctx.arc(slider.centerX, slider.centerY, slider.radius, 0, Math.PI*2, false);
+    ctx.arc(slider.centerX, slider.centerY, slider.radius, 0, Math.PI * 2, false);
     ctx.stroke();
     ctx.closePath();
     if (slider.type != "Plain") {
@@ -124,7 +122,7 @@
         my_gradient = ctx.createLinearGradient(slider.centerX - 0.8 * slider.radius, slider.centerY + 0.3 * slider.radius, slider.centerX - 0.8 * slider.radius, slider.centerY - 0.5 * slider.radius);
       } else if (slider.type == "Waist") {
         // maybe refactor, wanted to eyeball it without using math, also maybe move up, could put back in (slight difference at edge): ctx.moveTo(slider.centerX - 0.5 * slider.radius, slider.centerY + 0.05 * slider.radius);
-        ctx.arc(slider.centerX, slider.centerY - 0.8 * slider.radius, slider.radius, Math.PI * (2/3), Math.PI * (1/3), true);
+        ctx.arc(slider.centerX, slider.centerY - 0.8 * slider.radius, slider.radius, Math.PI * (2 / 3), Math.PI * (1 / 3), true);
         // refactor, need to send to 0.85 * slider.radius instead of 0.9 * slider.radius since there is a sharp v bend if not
         ctx.lineTo(slider.centerX + 0.2 * slider.radius, slider.centerY + 0.85 * slider.radius);
         ctx.arc(slider.centerX + 0.1 * slider.radius, slider.centerY + 0.9 * slider.radius, slider.radius * 0.1, 0, Math.PI, true);
@@ -135,9 +133,9 @@
         ctx.lineTo(slider.centerX - 0.5 * slider.radius, slider.centerY + 0.05 * slider.radius);
         my_gradient = ctx.createLinearGradient(slider.centerX - 0.2 * slider.radius, slider.centerY + 0.9 * slider.radius, slider.centerX - 0.2 * slider.radius, slider.centerY + 0.05 * slider.radius);
       } else if (slider.type == "Height") {
-        ctx.arc(slider.centerX, slider.centerY - 0.6 * slider.radius, slider.radius * 0.2, 0, Math.PI*2, false);
+        ctx.arc(slider.centerX, slider.centerY - 0.6 * slider.radius, slider.radius * 0.2, 0, Math.PI * 2, false);
         ctx.moveTo(slider.centerX + 0.08 * slider.radius, slider.centerY - 0.32 * slider.radius);
-        ctx.arc(slider.centerX, slider.centerY - 0.3 * slider.radius, slider.radius * 0.08, 0, Math.PI*2, false);
+        ctx.arc(slider.centerX, slider.centerY - 0.3 * slider.radius, slider.radius * 0.08, 0, Math.PI * 2, false);
         ctx.moveTo(slider.centerX + 0.05 * slider.radius, slider.centerY - 0.25 * slider.radius);
         // maybe refactor and add arms, here and in weight: ctx.lineTo(slider.centerX + 0.25 * slider.radius, slider.centerY - 0.1 * slider.radius);
         ctx.lineTo(slider.centerX + 0.05 * slider.radius, slider.centerY + 0.1 * slider.radius);
@@ -149,9 +147,9 @@
         ctx.lineTo(slider.centerX - 0.05 * slider.radius, slider.centerY - 0.25 * slider.radius);
         my_gradient = ctx.createLinearGradient(slider.centerX - 0.05 * slider.radius, slider.centerY + 0.8 * slider.radius, slider.centerX - 0.05 * slider.radius, slider.centerY - 0.8 * slider.radius);
       } else if (slider.type == "Weight") {
-        ctx.arc(slider.centerX, slider.centerY - 0.6 * slider.radius, slider.radius * 0.2, 0, Math.PI*2, false);
+        ctx.arc(slider.centerX, slider.centerY - 0.6 * slider.radius, slider.radius * 0.2, 0, Math.PI * 2, false);
         ctx.moveTo(slider.centerX + 0.08 * slider.radius, slider.centerY - 0.32 * slider.radius);
-        ctx.arc(slider.centerX, slider.centerY - 0.3 * slider.radius, slider.radius * 0.08, 0, Math.PI*2, false);
+        ctx.arc(slider.centerX, slider.centerY - 0.3 * slider.radius, slider.radius * 0.08, 0, Math.PI * 2, false);
         ctx.moveTo(slider.centerX + 0.05 * slider.radius, slider.centerY - 0.25 * slider.radius);
         ctx.lineTo(slider.centerX + 0.05 * slider.radius, slider.centerY + 0.1 * slider.radius);
         ctx.arc(slider.centerX, slider.centerY + 0.2 * slider.radius, slider.radius * 0.1, -(Math.PI / 3), Math.PI / 3, false);
@@ -178,22 +176,16 @@
 
   function drawBall(slider) {
     ctx.beginPath();
-    ctx.arc(slider.ball.x, slider.ball.y, slider.ball.radius, 0, Math.PI*2);
+    ctx.arc(slider.ball.x, slider.ball.y, slider.ball.radius, 0, Math.PI * 2);
     ctx.fillStyle = slider.ball.color;
     ctx.fill();
     ctx.closePath();
   }
 
-  function drawArc (slider) {
-    // refactor - bug, gap in arc visible if you have a large circular slider, arc comes to edge of ball, does not finish inside ball, maybe change name of angleOffset variable
-    var angleOffset = slider.ball.radius / slider.radius
-    if (((Math.PI / 2) + slider.angle) < angleOffset) {
-      var endAngle = slider.angle
-    } else {
-      var endAngle = slider.angle - angleOffset;
-    }
+  function drawArc(slider) {
+    // add this if want arc to stop at edge of ball: var angleOffset = Math.atan(slider.ball.radius / slider.radius), then also need check for (π / 2) + slider.angle) < angleOffset) for when go past the 0˚ mark at top of circle, π / 2 + slider.angle since angle starts at -π / 2 at top of circle
     ctx.beginPath();
-    ctx.arc(slider.centerX, slider.centerY, slider.radius, -(Math.PI / 2), endAngle, false);
+    ctx.arc(slider.centerX, slider.centerY, slider.radius, -(Math.PI / 2), slider.angle, false);
     ctx.lineWidth = slider.lineWidth;
     ctx.strokeStyle = slider.color;
     // have to set lineDashLength to a number > 0 for arc to be completely full in browsers like Safari, set it arbitrarily to 10 here
@@ -202,23 +194,23 @@
     ctx.closePath();
   }
 
-  function drawText (slider, count) {
+  function drawText(slider, count) {
     // maybe refactor and make this editable
     ctx.font = "12px Arial";
     ctx.fillStyle = slider.textColor;
-    ctx.fillText(slider.name + ": " + slider.priceUnits + slider.value + " " + slider.units, 10, 20*(count+1));
+    ctx.fillText(slider.name + ": " + slider.priceUnits + slider.value + " " + slider.units, 10, 20 * (count + 1));
   }
 
-  function moveBall (mouseX, mouseY, slider) {
+  function moveBall(mouseX, mouseY, slider) {
     var dx = mouseX - slider.centerX;
     var dy = mouseY - slider.centerY;
     slider.angle = Math.atan(dy / dx);
-    if (dx < 0) { slider.angle += Math.PI };
+    if (dx < 0) { slider.angle += Math.PI; }
     slider.ball.x = slider.centerX + slider.radius * Math.cos(slider.angle);
     slider.ball.y = slider.centerY + slider.radius * Math.sin(slider.angle);
-    slider.value = slider.minValue + slider.range * ((slider.angle + (Math.PI/2)) / (2 * Math.PI) );
+    slider.value = slider.minValue + slider.range * ((slider.angle + (Math.PI / 2)) / (2 * Math.PI)); //add π / 2 because 0˚ starts at -π / 2, divide by 2π because this is 360˚ in radians
     // refactor - bug if give step value below 0.5
-    var roundedValue = round(slider.value, slider.step);
+    var roundedValue = roundToStep(slider.value, slider.step);
     elem.data(slider.name.split(" ").join("_"), roundedValue);
     slider.value = roundedValue;
     draw();
@@ -227,7 +219,6 @@
   function handleMouseDown(e) {
     e.preventDefault();
     isMouseDown = true;
-    setOffset();
     var [mouseX, mouseY] = setMouse(e);
     for (var i = 0; i < sliders.length; i++) {
       if (onBall(mouseX, mouseY, sliders[i])) {
@@ -246,30 +237,24 @@
       return;
     }
     e.preventDefault();
-    setOffset();
     var [mouseX, mouseY] = setMouse(e);
     moveBall(mouseX, mouseY, selectedSlider);
   }
 
-  function round(x, target) {
-    return Math.ceil(x/target) * target;
+  function roundToStep(value, step) {
+    return Math.ceil(value / step) * step;
   }
 
-  function onBall (x, y, slider) {
+  function onBall(x, y, slider) {
     if (x > (slider.ball.x - slider.ball.radius) && x < (slider.ball.x + slider.ball.radius) && y > (slider.ball.y - slider.ball.radius) && y < (slider.ball.y + slider.ball.radius)) {
       return true;
     }
     return false;
   }
 
-  function setOffset() {
-    // refactor, need to call every time mouse is down or moves in case you have moved the canvas and offset positon is cached, could avoid having to call this if your project has no cache
-    offset = [canvas.offsetLeft, canvas.offsetTop];
-  }
-
   function setMouse(e) {
     // $(window).scrollLeft() and $(window).scrollTop() to account for page scrolling
-    return [parseInt(e.clientX - offset[0] + $(window).scrollLeft()), parseInt(e.clientY - offset[1] + $(window).scrollTop())];
+    return [parseInt(e.clientX - canvas.offsetLeft + $(window).scrollLeft()), parseInt(e.clientY - canvas.offsetTop + $(window).scrollTop())];
   }
 
 }( jQuery ));
