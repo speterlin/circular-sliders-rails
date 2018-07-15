@@ -3,12 +3,6 @@
 
   // private global variables
   var isMouseDown = false;
-  var selectedSlider = {};
-  var elem = null;
-  // if multiple canvases / containers would need to refactor
-  var canvas = null;
-  var ctx = null;
-  var sliders = [];
   var defaults = {
     name: "Slider",
     type: "Plain",
@@ -18,7 +12,7 @@
     step: 10,
     units: "",
     priceUnits: "",
-    radius: 40,
+    // centerX, centerY, and radius set in $.fn.sliders()
     lineWidth: 5,
     strokeColor: "#D3D3D3",
     ballColor: "#000000",
@@ -28,29 +22,30 @@
   }
 
   $.fn.sliders = function(slidersOptions) {
-    elem = this;
-    // maybe refactor, add .each in case there are multiple selected canvases
-    canvas = this[0];
-    ctx = canvas.getContext("2d");
-    [defaults.centerX, defaults.centerY] = [canvas.width / 2, canvas.height / 2];
-    // maybe refactor, add container option if there are multiple containers, could allow multiple containers / canvases in the future
-    for (var i = 0; i < slidersOptions.length; i++) {
-      defaults.name = "Slider " + (i + 1);
-      if (i > 0) {
-        defaults.centerX = sliders[i-1].centerX;
-        defaults.centerY = sliders[i-1].centerY;
-        defaults.radius = sliders[i-1].radius + sliders[i-1].lineWidth + defaults.lineWidth;
+    this.each(function() {
+      var canvas = this;
+      canvas.sliders = [];
+      // need to set these variables here because they need to be reset after cycling through sliders in each canvas since they are modified when cycling through sliders
+      [defaults.centerX, defaults.centerY, defaults.radius] = [canvas.width / 2, canvas.height / 2, 40];
+      // maybe refactor, add container option if there are multiple containers, could allow multiple containers / canvases in the future
+      for (var i = 0; i < slidersOptions.length; i++) {
+        defaults.name = "Slider " + (i + 1);
+        if (i > 0) {
+          defaults.centerX = canvas.sliders[i-1].centerX;
+          defaults.centerY = canvas.sliders[i-1].centerY;
+          defaults.radius = canvas.sliders[i-1].radius + canvas.sliders[i-1].lineWidth + defaults.lineWidth;
+        }
+        var sliderSettings = $.extend( {}, defaults, slidersOptions[i] );
+        canvas.sliders.push(new Slider (sliderSettings));
+        // maybe refactor, visible if have it like this: elem.attr('data-'+sliders[i].name.split(" ").join("_"), sliders[i].minValue);
+        $(canvas).data(canvas.sliders[i].name.split(" ").join("_"), canvas.sliders[i].minValue);
       }
-      var sliderSettings = $.extend( {}, defaults, slidersOptions[i] );
-      sliders.push(new Slider (sliderSettings));
-      // maybe refactor, visible if have it like this: elem.attr('data-'+sliders[i].name.split(" ").join("_"), sliders[i].minValue);
-      elem.data(sliders[i].name.split(" ").join("_"), sliders[i].minValue);
-    }
-    selectedSlider = sliders[0];
-    draw();
-    canvas.addEventListener("mousedown", handleMouseDown);
-    canvas.addEventListener("mouseup", handleMouseUp);
-    canvas.addEventListener("mousemove", handleMouseMove);
+      canvas.selectedSlider = canvas.sliders[0];
+      draw(canvas);
+      canvas.addEventListener("mousedown", handleMouseDown);
+      canvas.addEventListener("mouseup", handleMouseUp);
+      canvas.addEventListener("mousemove", handleMouseMove);
+    })
   }
 
   function Slider(settings) {
@@ -85,17 +80,19 @@
     this.color = sliderSettings.ballColor;
   }
 
-  function draw() {
+  function draw(canvas) {
+    var ctx = canvas.getContext("2d");
+    // in the future want to be able to clear only the slider using, maybe with svg groups
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (var i = 0; i < sliders.length; i++) {
-      drawSlider(sliders[i]);
-      drawArc(sliders[i]);
-      drawBall(sliders[i]);
-      if (sliders[i].legend) { drawText(sliders[i], i); }
+    for (var i = 0; i < canvas.sliders.length; i++) {
+      drawSlider(ctx, canvas.sliders[i]);
+      drawArc(ctx, canvas.sliders[i]);
+      drawBall(ctx, canvas.sliders[i]);
+      if (canvas.sliders[i].legend) { drawText(ctx, canvas.sliders[i], i); }
     }
   }
 
-  function drawSlider(slider) {
+  function drawSlider(ctx, slider) {
     ctx.lineWidth = slider.lineWidth;
     ctx.strokeStyle = slider.strokeColor;
     var sliderCircumference = 2 * Math.PI * slider.radius;
@@ -174,7 +171,7 @@
     }
   }
 
-  function drawBall(slider) {
+  function drawBall(ctx, slider) {
     ctx.beginPath();
     ctx.arc(slider.ball.x, slider.ball.y, slider.ball.radius, 0, Math.PI * 2);
     ctx.fillStyle = slider.ball.color;
@@ -182,7 +179,7 @@
     ctx.closePath();
   }
 
-  function drawArc(slider) {
+  function drawArc(ctx, slider) {
     // add this if want arc to stop at edge of ball: var angleOffset = Math.atan(slider.ball.radius / slider.radius), then also need check for (π / 2) + slider.angle) < angleOffset) for when go past the 0˚ mark at top of circle, π / 2 + slider.angle since angle starts at -π / 2 at top of circle
     ctx.beginPath();
     ctx.arc(slider.centerX, slider.centerY, slider.radius, -(Math.PI / 2), slider.angle, false);
@@ -194,14 +191,15 @@
     ctx.closePath();
   }
 
-  function drawText(slider, count) {
+  function drawText(ctx, slider, count) {
     // maybe refactor and make this editable
     ctx.font = "12px Arial";
     ctx.fillStyle = slider.textColor;
     ctx.fillText(slider.name + ": " + slider.priceUnits + slider.value + " " + slider.units, 10, 20 * (count + 1));
   }
 
-  function moveBall(mouseX, mouseY, slider) {
+  function moveBall(mouseX, mouseY, canvas) {
+    var slider = canvas.selectedSlider;
     var dx = mouseX - slider.centerX;
     var dy = mouseY - slider.centerY;
     slider.angle = Math.atan(dy / dx);
@@ -211,18 +209,19 @@
     slider.value = slider.minValue + slider.range * ((slider.angle + (Math.PI / 2)) / (2 * Math.PI)); //add π / 2 because 0˚ starts at -π / 2, divide by 2π because this is 360˚ in radians
     // refactor - bug if give step value below 0.5
     var roundedValue = roundToStep(slider.value, slider.step);
-    elem.data(slider.name.split(" ").join("_"), roundedValue);
+    $(canvas).data(slider.name.split(" ").join("_"), roundedValue);
     slider.value = roundedValue;
-    draw();
+    draw(canvas);
   }
 
   function handleMouseDown(e) {
     e.preventDefault();
     isMouseDown = true;
     var [mouseX, mouseY] = setMouse(e);
+    var sliders = e.target.sliders; // maybe refactor, don't like having multiple calls to e.target.sliders
     for (var i = 0; i < sliders.length; i++) {
       if (onBall(mouseX, mouseY, sliders[i])) {
-        selectedSlider = sliders[i];
+        e.target.selectedSlider = sliders[i];
       }
     }
   }
@@ -238,7 +237,7 @@
     }
     e.preventDefault();
     var [mouseX, mouseY] = setMouse(e);
-    moveBall(mouseX, mouseY, selectedSlider);
+    moveBall(mouseX, mouseY, e.target);
   }
 
   function roundToStep(value, step) {
@@ -254,6 +253,7 @@
 
   function setMouse(e) {
     // $(window).scrollLeft() and $(window).scrollTop() to account for page scrolling
+    var canvas = e.target;
     return [parseInt(e.clientX - canvas.offsetLeft + $(window).scrollLeft()), parseInt(e.clientY - canvas.offsetTop + $(window).scrollTop())];
   }
 
