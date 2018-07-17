@@ -84,11 +84,12 @@
     var ctx = canvas.getContext("2d");
     // in the future want to be able to clear only the slider using, maybe with svg groups
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (var i = 0; i < canvas.sliders.length; i++) {
-      drawSlider(ctx, canvas.sliders[i]);
-      drawArc(ctx, canvas.sliders[i]);
-      drawBall(ctx, canvas.sliders[i]);
-      if (canvas.sliders[i].legend) { drawText(ctx, canvas.sliders[i], i); }
+    var sliders = canvas.sliders;
+    for (var i = 0; i < sliders.length; i++) {
+      drawSlider(ctx, sliders[i]);
+      drawArc(ctx, sliders[i]);
+      drawBall(ctx, sliders[i]);
+      if (sliders[i].legend) { drawText(ctx, sliders[i], i); }
     }
   }
 
