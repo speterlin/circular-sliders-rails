@@ -42,7 +42,8 @@ Use jQuery to add circular sliders to the canvas area. Pass slider settings as o
           step: 1,
           units: "years",
           color: "#FF7F50",
-          textColor: "#FF7F50"
+          legendColor: "#FF7F50",
+          legendFont: "14px Arial"
         },
         {
           name: "Daily activity",
@@ -51,7 +52,7 @@ Use jQuery to add circular sliders to the canvas area. Pass slider settings as o
           maxValue: 25,
           step: 1,
           color: "#FF7F50",
-          textColor: "#FF7F50"
+          legendColor: "#FF7F50"
         },
         {
           name: "Height",
@@ -99,12 +100,12 @@ Use jQuery to add circular sliders to the canvas area. Pass slider settings as o
           minValue: 10,
           maxValue: 60,
           step: 1,
-          textColor: "#0000FF"
+          legendColor: "#0000FF"
         },
         {
           name: "Desired price",
           priceUnits: "£",
-          textColor: "#0000FF",
+          legendColor: "#0000FF",
           step: 5
         }
       ]);
@@ -128,9 +129,10 @@ Slider settings:
 | lineWidth       | Float   | 5                                   | The slider and arc width                               |
 | strokeColor     | String  | "#D3D3D3"                           | The color of the dashes on the slider                  |
 | ballColor       | String  | "#000000"                           | The color of the slider ball                           |
-| textColor       | String  | "#000000"                           | The color of the slider label (name, value and units)  |
 | gradientFill    | Boolean | true                                | Specify whether you would like the image in the center (for specified type) of the slider to fill with the slider's color as you scale the slider |
 | legend          | Boolean | true                                | Specify whether you would like the slider name and value listed in the top left corner of the canvas |
+| legendFont      | Boolean | "12px Arial"                        | Specify the font for the legend                        |
+| legendColor     | String  | "#000000"                           | The color of the slider label (name, value and units)  |
 
 Retrieve values of individual sliders by calling:
 

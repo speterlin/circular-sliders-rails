@@ -12,22 +12,22 @@
     step: 10,
     units: "",
     priceUnits: "",
-    // centerX, centerY, and radius set in $.fn.sliders()
+    // centerX, centerY, and radius set in $.fn.sliders() because they are specific/modified to each canvas
     lineWidth: 5,
     strokeColor: "#D3D3D3",
     ballColor: "#000000",
-    textColor: "#000000",
     gradientFill: true,
-    legend: true
+    legend: true,
+    legendFont: "12px Arial",
+    legendColor: "#000000"
   }
 
   $.fn.sliders = function(slidersOptions) {
     this.each(function() {
       var canvas = this;
       canvas.sliders = [];
-      // need to set these variables here because they need to be reset after cycling through sliders in each canvas since they are modified when cycling through sliders
       [defaults.centerX, defaults.centerY, defaults.radius] = [canvas.width / 2, canvas.height / 2, 40];
-      // maybe refactor, add container option if there are multiple containers, could allow multiple containers / canvases in the future
+      // maybe refactor, add container option if there are multiple containers
       for (var i = 0; i < slidersOptions.length; i++) {
         defaults.name = "Slider " + (i + 1);
         if (i > 0) {
@@ -38,7 +38,7 @@
         var sliderSettings = $.extend( {}, defaults, slidersOptions[i] );
         canvas.sliders.push(new Slider (sliderSettings));
         // maybe refactor, visible if have it like this: elem.attr('data-'+sliders[i].name.split(" ").join("_"), sliders[i].minValue);
-        $(canvas).data(canvas.sliders[i].name.split(" ").join("_"), canvas.sliders[i].minValue);
+        $(canvas).data(canvas.sliders[i].name.split(" ").join("_"), canvas.sliders[i].value);
       }
       canvas.selectedSlider = canvas.sliders[0];
       draw(canvas);
@@ -62,11 +62,12 @@
     this.radius = settings.radius;
     this.lineWidth = settings.lineWidth;
     this.strokeColor = settings.strokeColor;
-    this.textColor = settings.textColor;
     this.value = settings.minValue;
     this.range = settings.maxValue - settings.minValue;
     this.gradientFill = settings.gradientFill;
     this.legend = settings.legend;
+    this.legendFont = settings.legendFont;
+    this.legendColor = settings.legendColor;
     // ball starts at top of circle which is - π / 2
     this.angle = -(Math.PI / 2);
     this.ball = new Ball (settings);
@@ -110,6 +111,7 @@
       ctx.setLineDash([10, 0]);
       ctx.lineWidth = 5;
       var my_gradient = null;
+      // refactor, can make each of these its own method to reduce size of overall method
       if (slider.type == "Shoe") {
         ctx.moveTo(slider.centerX - 0.8 * slider.radius, slider.centerY - 0.5 * slider.radius);
         ctx.arc(slider.centerX - 0.5 * slider.radius, slider.centerY - 0.5 * slider.radius, slider.radius * 0.3, Math.PI, 0, true);
@@ -193,9 +195,8 @@
   }
 
   function drawText(ctx, slider, count) {
-    // maybe refactor and make this editable
-    ctx.font = "12px Arial";
-    ctx.fillStyle = slider.textColor;
+    ctx.font = slider.legendFont;
+    ctx.fillStyle = slider.legendColor;
     ctx.fillText(slider.name + ": " + slider.priceUnits + slider.value + " " + slider.units, 10, 20 * (count + 1));
   }
 
@@ -219,7 +220,7 @@
     e.preventDefault();
     isMouseDown = true;
     var [mouseX, mouseY] = setMouse(e);
-    var sliders = e.target.sliders; // maybe refactor, don't like having multiple calls to e.target.sliders
+    var sliders = e.target.sliders;
     for (var i = 0; i < sliders.length; i++) {
       if (onBall(mouseX, mouseY, sliders[i])) {
         e.target.selectedSlider = sliders[i];
@@ -253,8 +254,8 @@
   }
 
   function setMouse(e) {
-    // $(window).scrollLeft() and $(window).scrollTop() to account for page scrolling
     var canvas = e.target;
+    // $(window).scrollLeft() and $(window).scrollTop() to account for page scrolling
     return [parseInt(e.clientX - canvas.offsetLeft + $(window).scrollLeft()), parseInt(e.clientY - canvas.offsetTop + $(window).scrollTop())];
   }
 
