@@ -42,8 +42,7 @@ Use jQuery to add circular sliders to the canvas area. Pass slider settings as o
           step: 1,
           units: "years",
           color: "#FF7F50",
-          legendColor: "#FF7F50",
-          legendFont: "14px Arial"
+          legendColor: "#FF7F50"
         },
         {
           name: "Daily activity",

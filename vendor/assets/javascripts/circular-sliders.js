@@ -1,3 +1,5 @@
+//= require shapes
+
 (function ( $ ) {
   'use strict';
 
@@ -63,13 +65,16 @@
     this.lineWidth = settings.lineWidth;
     this.strokeColor = settings.strokeColor;
     this.value = settings.minValue;
-    this.range = settings.maxValue - settings.minValue;
     this.gradientFill = settings.gradientFill;
     this.legend = settings.legend;
     this.legendFont = settings.legendFont;
     this.legendColor = settings.legendColor;
     // ball starts at top of circle which is - π / 2
     this.angle = -(Math.PI / 2);
+    this.range = this.maxValue - this.minValue;
+    // maybe refactor, I like 2/3 and 1/3 for now
+    this.sliderLineDashLength = (2 / 3) * (2 * Math.PI * this.radius / (this.range / this.step));
+    this.sliderLineDashSpacing = (1 / 3) * (2 * Math.PI * this.radius / (this.range / this.step));
     this.ball = new Ball (settings);
   }
 
@@ -97,11 +102,7 @@
   function drawSlider(ctx, slider) {
     ctx.lineWidth = slider.lineWidth;
     ctx.strokeStyle = slider.strokeColor;
-    var sliderCircumference = 2 * Math.PI * slider.radius;
-    // maybe refactor, I like 2/3 and 1/3 for now, maybe move this to #Slider so don't have to calculate every time
-    var sliderLineDashLength = (2 / 3) * (sliderCircumference / (slider.range / slider.step));
-    var sliderLineDashSpacing = (1 / 3) * (sliderCircumference / (slider.range / slider.step));
-    ctx.setLineDash([sliderLineDashLength, sliderLineDashSpacing]);
+    ctx.setLineDash([slider.sliderLineDashLength, slider.sliderLineDashSpacing]);
     ctx.beginPath();
     ctx.arc(slider.centerX, slider.centerY, slider.radius, 0, Math.PI * 2, false);
     ctx.stroke();
@@ -111,56 +112,14 @@
       ctx.setLineDash([10, 0]);
       ctx.lineWidth = 5;
       var my_gradient = null;
-      // refactor, can make each of these its own method to reduce size of overall method
       if (slider.type == "Shoe") {
-        ctx.moveTo(slider.centerX - 0.8 * slider.radius, slider.centerY - 0.5 * slider.radius);
-        ctx.arc(slider.centerX - 0.5 * slider.radius, slider.centerY - 0.5 * slider.radius, slider.radius * 0.3, Math.PI, 0, true);
-        ctx.lineTo(slider.centerX + 0.6 * slider.radius, slider.centerY - 0.1 * slider.radius);
-        ctx.arc(slider.centerX + 0.7 * slider.radius, slider.centerY + 0.1 * slider.radius, slider.radius * 0.2, -(Math.PI / 2), Math.PI / 2, false);
-        ctx.lineTo(slider.centerX - 0.8 * slider.radius, slider.centerY + 0.3 * slider.radius);
-        ctx.lineTo(slider.centerX - 0.8 * slider.radius, slider.centerY - 0.5 * slider.radius);
-        my_gradient = ctx.createLinearGradient(slider.centerX - 0.8 * slider.radius, slider.centerY + 0.3 * slider.radius, slider.centerX - 0.8 * slider.radius, slider.centerY - 0.5 * slider.radius);
+        my_gradient = drawShoeWithGradient(ctx, slider);
       } else if (slider.type == "Waist") {
-        // maybe refactor, wanted to eyeball it without using math, also maybe move up, could put back in (slight difference at edge): ctx.moveTo(slider.centerX - 0.5 * slider.radius, slider.centerY + 0.05 * slider.radius);
-        ctx.arc(slider.centerX, slider.centerY - 0.8 * slider.radius, slider.radius, Math.PI * (2 / 3), Math.PI * (1 / 3), true);
-        // refactor, need to send to 0.85 * slider.radius instead of 0.9 * slider.radius since there is a sharp v bend if not
-        ctx.lineTo(slider.centerX + 0.2 * slider.radius, slider.centerY + 0.85 * slider.radius);
-        ctx.arc(slider.centerX + 0.1 * slider.radius, slider.centerY + 0.9 * slider.radius, slider.radius * 0.1, 0, Math.PI, true);
-        ctx.lineTo(slider.centerX, slider.centerY + 0.4 * slider.radius);
-        ctx.arc(slider.centerX - 0.1 * slider.radius, slider.centerY + 0.9 * slider.radius, slider.radius * 0.1, 0, Math.PI, true);
-        // maybe refactor moveTo, need it to avoid sharp v bend at base of arc
-        ctx.moveTo(slider.centerX - 0.2 * slider.radius, slider.centerY + 0.9 * slider.radius);
-        ctx.lineTo(slider.centerX - 0.5 * slider.radius, slider.centerY + 0.05 * slider.radius);
-        my_gradient = ctx.createLinearGradient(slider.centerX - 0.2 * slider.radius, slider.centerY + 0.9 * slider.radius, slider.centerX - 0.2 * slider.radius, slider.centerY + 0.05 * slider.radius);
+        my_gradient = drawWaistWithGradient(ctx, slider);
       } else if (slider.type == "Height") {
-        ctx.arc(slider.centerX, slider.centerY - 0.6 * slider.radius, slider.radius * 0.2, 0, Math.PI * 2, false);
-        ctx.moveTo(slider.centerX + 0.08 * slider.radius, slider.centerY - 0.32 * slider.radius);
-        ctx.arc(slider.centerX, slider.centerY - 0.3 * slider.radius, slider.radius * 0.08, 0, Math.PI * 2, false);
-        ctx.moveTo(slider.centerX + 0.05 * slider.radius, slider.centerY - 0.25 * slider.radius);
-        // maybe refactor and add arms, here and in weight: ctx.lineTo(slider.centerX + 0.25 * slider.radius, slider.centerY - 0.1 * slider.radius);
-        ctx.lineTo(slider.centerX + 0.05 * slider.radius, slider.centerY + 0.1 * slider.radius);
-        ctx.arc(slider.centerX, slider.centerY + 0.2 * slider.radius, slider.radius * 0.1, -(Math.PI / 3), Math.PI / 3, false);
-        ctx.lineTo(slider.centerX + 0.05 * slider.radius, slider.centerY + 0.8 * slider.radius);
-        ctx.lineTo(slider.centerX - 0.2 * slider.radius, slider.centerY + 0.8 * slider.radius);
-        ctx.arc(slider.centerX - 0.15 * slider.radius, slider.centerY + 0.8 * slider.radius, slider.radius * 0.05, Math.PI, -(Math.PI / 2), false);
-        ctx.lineTo(slider.centerX - 0.05 * slider.radius, slider.centerY + 0.75 * slider.radius);
-        ctx.lineTo(slider.centerX - 0.05 * slider.radius, slider.centerY - 0.25 * slider.radius);
-        my_gradient = ctx.createLinearGradient(slider.centerX - 0.05 * slider.radius, slider.centerY + 0.8 * slider.radius, slider.centerX - 0.05 * slider.radius, slider.centerY - 0.8 * slider.radius);
+        my_gradient = drawPersonWithGradient(ctx, slider);
       } else if (slider.type == "Weight") {
-        ctx.arc(slider.centerX, slider.centerY - 0.6 * slider.radius, slider.radius * 0.2, 0, Math.PI * 2, false);
-        ctx.moveTo(slider.centerX + 0.08 * slider.radius, slider.centerY - 0.32 * slider.radius);
-        ctx.arc(slider.centerX, slider.centerY - 0.3 * slider.radius, slider.radius * 0.08, 0, Math.PI * 2, false);
-        ctx.moveTo(slider.centerX + 0.05 * slider.radius, slider.centerY - 0.25 * slider.radius);
-        ctx.lineTo(slider.centerX + 0.05 * slider.radius, slider.centerY + 0.1 * slider.radius);
-        ctx.arc(slider.centerX, slider.centerY + 0.2 * slider.radius, slider.radius * 0.1, -(Math.PI / 3), Math.PI / 3, false);
-        ctx.lineTo(slider.centerX + 0.05 * slider.radius, slider.centerY + 0.8 * slider.radius);
-        ctx.lineTo(slider.centerX - 0.2 * slider.radius, slider.centerY + 0.8 * slider.radius);
-        ctx.arc(slider.centerX - 0.15 * slider.radius, slider.centerY + 0.8 * slider.radius, slider.radius * 0.05, Math.PI, -(Math.PI / 2), false);
-        ctx.lineTo(slider.centerX - 0.05 * slider.radius, slider.centerY + 0.75 * slider.radius);
-        ctx.lineTo(slider.centerX - 0.05 * slider.radius, slider.centerY + 0.15 * slider.radius);
-        ctx.arc(slider.centerX - 0.05 * slider.radius, slider.centerY, slider.radius * 0.15, Math.PI / 2, -(Math.PI / 2), false);
-        ctx.lineTo(slider.centerX - 0.05 * slider.radius, slider.centerY - 0.25 * slider.radius);
-        my_gradient = ctx.createLinearGradient(slider.centerX - 0.05 * slider.radius, slider.centerY + 0.8 * slider.radius, slider.centerX - 0.05 * slider.radius, slider.centerY - 0.8 * slider.radius);
+        my_gradient = drawPersonWithGradient(ctx, slider, {style: "Weight"});
       }
       if (slider.gradientFill) {
         var scale = (slider.value - slider.minValue) / slider.range;
@@ -195,9 +154,11 @@
   }
 
   function drawText(ctx, slider, count) {
+    ctx.beginPath();
     ctx.font = slider.legendFont;
     ctx.fillStyle = slider.legendColor;
     ctx.fillText(slider.name + ": " + slider.priceUnits + slider.value + " " + slider.units, 10, 20 * (count + 1));
+    ctx.closePath();
   }
 
   function moveBall(mouseX, mouseY, canvas) {
