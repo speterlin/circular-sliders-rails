@@ -73,8 +73,9 @@
     this.angle = -(Math.PI / 2);
     this.range = this.maxValue - this.minValue;
     // maybe refactor, I like 2/3 and 1/3 for now
-    this.sliderLineDashLength = (2 / 3) * (2 * Math.PI * this.radius / (this.range / this.step));
-    this.sliderLineDashSpacing = (1 / 3) * (2 * Math.PI * this.radius / (this.range / this.step));
+    var arcSegment = 2 * Math.PI * this.radius / (this.range / this.step);
+    this.lineDashLength = (2 / 3) * arcSegment;
+    this.lineDashSpacing = (1 / 3) * arcSegment;
     this.ball = new Ball (settings);
   }
 
@@ -86,7 +87,7 @@
     this.color = sliderSettings.ballColor;
   }
 
-  function draw(canvas) {
+  function draw(canvas, movingBall = false) {
     var ctx = canvas.getContext("2d");
     // in the future want to be able to clear only the slider using, maybe with svg groups
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -95,14 +96,14 @@
       drawSlider(ctx, sliders[i]);
       drawArc(ctx, sliders[i]);
       drawBall(ctx, sliders[i]);
-      if (sliders[i].legend) { drawText(ctx, sliders[i], i); }
+      if (sliders[i].legend) { drawLegend(ctx, sliders[i], i, movingBall && sliders[i] == canvas.selectedSlider); }
     }
   }
 
   function drawSlider(ctx, slider) {
     ctx.lineWidth = slider.lineWidth;
     ctx.strokeStyle = slider.strokeColor;
-    ctx.setLineDash([slider.sliderLineDashLength, slider.sliderLineDashSpacing]);
+    ctx.setLineDash([slider.lineDashLength, slider.lineDashSpacing]);
     ctx.beginPath();
     ctx.arc(slider.centerX, slider.centerY, slider.radius, 0, Math.PI * 2, false);
     ctx.stroke();
@@ -153,11 +154,12 @@
     ctx.closePath();
   }
 
-  function drawText(ctx, slider, count) {
+  function drawLegend(ctx, slider, sliderIndex, movingSliderBall) {
     ctx.beginPath();
-    ctx.font = slider.legendFont;
+    if (movingSliderBall) {ctx.font = "bold " + slider.legendFont;} else {ctx.font = slider.legendFont;}
     ctx.fillStyle = slider.legendColor;
-    ctx.fillText(slider.name + ": " + slider.priceUnits + slider.value + " " + slider.units, 10, 20 * (count + 1));
+    // maybe refactor, 20px vertical spacing by default, could be an issue if set font above 20px
+    ctx.fillText(slider.name + ": " + slider.priceUnits + slider.value + " " + slider.units, 10, 20 * (sliderIndex + 1));
     ctx.closePath();
   }
 
@@ -174,6 +176,14 @@
     var roundedValue = roundToStep(slider.value, slider.step);
     $(canvas).data(slider.name.split(" ").join("_"), roundedValue);
     slider.value = roundedValue;
+    draw(canvas, true);
+  }
+
+  function moveBallToStep(canvas) {
+    var slider = canvas.selectedSlider;
+    slider.angle = (2 * Math.PI * (slider.value - slider.minValue) / slider.range) - (Math.PI / 2)
+    slider.ball.x = slider.centerX + slider.radius * Math.cos(slider.angle);
+    slider.ball.y = slider.centerY + slider.radius * Math.sin(slider.angle);
     draw(canvas);
   }
 
@@ -192,6 +202,7 @@
   function handleMouseUp(e) {
     e.preventDefault();
     isMouseDown = false;
+    moveBallToStep(e.target);
   }
 
   function handleMouseMove(e) {

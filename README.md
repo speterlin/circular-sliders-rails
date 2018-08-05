@@ -129,9 +129,9 @@ Slider settings:
 | strokeColor     | String  | "#D3D3D3"                           | The color of the dashes on the slider                  |
 | ballColor       | String  | "#000000"                           | The color of the slider ball                           |
 | gradientFill    | Boolean | true                                | Specify whether you would like the image in the center (for specified type) of the slider to fill with the slider's color as you scale the slider |
-| legend          | Boolean | true                                | Specify whether you would like the slider name and value listed in the top left corner of the canvas |
-| legendFont      | Boolean | "12px Arial"                        | Specify the font for the legend                        |
-| legendColor     | String  | "#000000"                           | The color of the slider label (name, value and units)  |
+| legend          | Boolean | true                                | Specify whether you would like the slider name, value and units listed in the top left corner of the canvas |
+| legendFont      | Boolean | "12px Arial"                        | Specify the font for the slider legend                 |
+| legendColor     | String  | "#000000"                           | The color of the slider legend                         |
 
 Retrieve values of individual sliders by calling:
 
