@@ -121,6 +121,7 @@ Slider settings:
 | color           | String  | "#0000FF"                           | Specify the color of the arc fill                      |
 | minValue        | Float   | 0                                   | The minimum value of your slider                       |
 | maxValue        | Float   | 100                                 | The maximum value of your slider                       |
+| value           | Float   | minValue                            | Set initial value of slider on page load               |
 | step            | Float   | 10                                  | The amount the value is incremented                    |
 | units           | String  | ""                                  | The units your value is displayed in                   |
 | priceUnits      | String  | ""                                  | Adds price ('$', '€', '£' ...) before value            |

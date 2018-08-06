@@ -39,7 +39,7 @@
         }
         var sliderSettings = $.extend( {}, defaults, slidersOptions[i] );
         canvas.sliders.push(new Slider (sliderSettings));
-        // maybe refactor, visible if have it like this: elem.attr('data-'+sliders[i].name.split(" ").join("_"), sliders[i].minValue);
+        // visible on html element (and lower cases name) if have it like this: $(canvas).attr('data-'+canvas.sliders[i].name.split(" ").join("_"), canvas.sliders[i].value);
         $(canvas).data(canvas.sliders[i].name.split(" ").join("_"), canvas.sliders[i].value);
       }
       canvas.selectedSlider = canvas.sliders[0];
@@ -58,33 +58,30 @@
     this.color = settings.color;
     this.minValue = settings.minValue;
     this.maxValue = settings.maxValue;
+    this.value = settings.value || settings.minValue;
     this.step = settings.step;
     this.units = settings.units;
     this.priceUnits = settings.priceUnits;
     this.radius = settings.radius;
     this.lineWidth = settings.lineWidth;
     this.strokeColor = settings.strokeColor;
-    this.value = settings.minValue;
     this.gradientFill = settings.gradientFill;
     this.legend = settings.legend;
     this.legendFont = settings.legendFont;
     this.legendColor = settings.legendColor;
-    // ball starts at top of circle which is - π / 2
-    this.angle = -(Math.PI / 2);
     this.range = this.maxValue - this.minValue;
+    this.angle = angleForValue(this);
     // maybe refactor, I like 2/3 and 1/3 for now
     var arcSegment = 2 * Math.PI * this.radius / (this.range / this.step);
     this.lineDashLength = (2 / 3) * arcSegment;
     this.lineDashSpacing = (1 / 3) * arcSegment;
-    this.ball = new Ball (settings);
+    this.ball = new Ball (this, settings.ballColor);
   }
 
-  function Ball(sliderSettings) {
-    this.x = sliderSettings.centerX;
-    // ball starts at top of circle
-    this.y = sliderSettings.centerY - sliderSettings.radius;
-    this.radius = sliderSettings.lineWidth;
-    this.color = sliderSettings.ballColor;
+  function Ball(slider, ballColor) {
+    [this.x, this.y] = ballLocationForAngle(slider);
+    this.radius = slider.lineWidth;
+    this.color = ballColor;
   }
 
   function draw(canvas, movingBall = false) {
@@ -166,12 +163,14 @@
   function moveBall(mouseX, mouseY, canvas) {
     var slider = canvas.selectedSlider;
     var dx = mouseX - slider.centerX;
+    // if draw out in x-y coordinates correct way would be slider.centerY - mouseY, but because top of circle -π / 2, have to do negative of angle which is the same as doing below
     var dy = mouseY - slider.centerY;
     slider.angle = Math.atan(dy / dx);
+    // to cover other half of circle, Math.atan only calculates angles between -π/2 and π/2
     if (dx < 0) { slider.angle += Math.PI; }
-    slider.ball.x = slider.centerX + slider.radius * Math.cos(slider.angle);
-    slider.ball.y = slider.centerY + slider.radius * Math.sin(slider.angle);
-    slider.value = slider.minValue + slider.range * ((slider.angle + (Math.PI / 2)) / (2 * Math.PI)); //add π / 2 because 0˚ starts at -π / 2, divide by 2π because this is 360˚ in radians
+    [slider.ball.x, slider.ball.y] = ballLocationForAngle(slider);
+    // add π / 2 because 0˚ (top of circle) starts at -π / 2, divide by 2π because this is 360˚ in radians, this is reverse of #angleForValue
+    slider.value = slider.minValue + slider.range * ((slider.angle + (Math.PI / 2)) / (2 * Math.PI));
     // refactor - bug if give step value below 0.5
     var roundedValue = roundToStep(slider.value, slider.step);
     $(canvas).data(slider.name.split(" ").join("_"), roundedValue);
@@ -181,10 +180,17 @@
 
   function moveBallToStep(canvas) {
     var slider = canvas.selectedSlider;
-    slider.angle = (2 * Math.PI * (slider.value - slider.minValue) / slider.range) - (Math.PI / 2)
-    slider.ball.x = slider.centerX + slider.radius * Math.cos(slider.angle);
-    slider.ball.y = slider.centerY + slider.radius * Math.sin(slider.angle);
+    slider.angle = angleForValue(slider);
+    [slider.ball.x, slider.ball.y] = ballLocationForAngle(slider);
     draw(canvas);
+  }
+
+  function ballLocationForAngle (slider) {
+    return [slider.centerX + slider.radius * Math.cos(slider.angle), slider.centerY + slider.radius * Math.sin(slider.angle)];
+  }
+
+  function angleForValue (slider) {
+    return (2 * Math.PI * (slider.value - slider.minValue) / slider.range) - (Math.PI / 2)
   }
 
   function handleMouseDown(e) {
