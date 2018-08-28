@@ -1,8 +1,6 @@
-# Circular Sliders for Rails
+# Jquery Circular Sliders for Rails
 
-A Ruby on Rails gem which allows you to draw concentric responsive circular sliders with jQuery. Requires jQuery.
-
-![Circular sliders](../assets/circular-sliders-rails.gif?raw=true)
+Provides integration of [Jquery Circular Sliders](https://github.com/speterlin/jquery.circular-sliders) with Rails Asset Pipeline.
 
 ## Installation
 
@@ -24,119 +22,9 @@ Or install it yourself as:
 
 Include in your application.js file:
 
-    //= require circular-sliders
+    //= require jquery.circular-sliders
 
-Create a canvas element in the view where you would like the sliders to go:
-
-    <canvas id="sliders" width="1200" height="300" style="border:1px solid;"></canvas>
-
-Use jQuery to add circular sliders to the canvas area. Pass slider settings as objects in an array. Create multiple sliders or just a single slider. With the settings below you should see something like the picture above.
-
-    <script>
-      $('#sliders').sliders([
-        {
-          name: "Age",
-          centerX: 175,
-          minValue: 18,
-          maxValue: 66,
-          step: 1,
-          units: "years",
-          color: "#FF7F50",
-          legendColor: "#FF7F50"
-        },
-        {
-          name: "Daily activity",
-          units: "miles",
-          minValue: 0,
-          maxValue: 25,
-          step: 1,
-          color: "#FF7F50",
-          legendColor: "#FF7F50"
-        },
-        {
-          name: "Height",
-          color: "#FFDEAD",
-          type: "Height",
-          centerX: 375,
-          minValue: 0,
-          maxValue: 250,
-          step: 2,
-          units: "cm",
-          radius: 100
-        },
-        {
-          name: "Weight",
-          color: "#A52A2A",
-          type: "Weight",
-          minValue: 0,
-          maxValue: 150,
-          radius: 100,
-          centerX: 600,
-          step: 5,
-          units: "kg",
-          lineWidth: 10,
-          gradientFill: false
-        },
-        {
-          name: "Waist size",
-          color: "#A0522D",
-          type: "Waist",
-          centerX: 825,
-          radius: 100,
-          minValue: 0,
-          maxValue: 50,
-          lineWidth: 10,
-          step: 2,
-          units: "cm",
-          ballColor: "#A0522D"
-        },
-        {
-          name: "Shoe size",
-          type: "Shoe",
-          centerX: 1050,
-          radius: 100,
-          lineWidth: 10,
-          minValue: 10,
-          maxValue: 60,
-          step: 1,
-          legendColor: "#0000FF"
-        },
-        {
-          name: "Desired price",
-          priceUnits: "£",
-          legendColor: "#0000FF",
-          step: 5
-        }
-      ]);
-    </script>
-
-Slider settings:
-
-| Name            | Type    | Default                             | Description                                            |
-| --------------- | ------- | ----------------------------------- | ------------------------------------------------------ |
-| name            | String  | Slider n                            | Name your slider                                       |
-| type            | String  | Plain                               | Pick between various types for interesting graphics at the center of the slider: 'Height', 'Weight', 'Shoe', 'Waist', and more to come |
-| centerX         | Float   | Center of canvas or previous slider | Specify the x value for the center of the slider       |
-| centerY         | Float   | Center of canvas or previous slider | Specify the y value for the center of the slider       |
-| color           | String  | "#0000FF"                           | Specify the color of the arc fill                      |
-| minValue        | Float   | 0                                   | The minimum value of your slider                       |
-| maxValue        | Float   | 100                                 | The maximum value of your slider                       |
-| value           | Float   | minValue                            | Set initial value of slider on page load               |
-| step            | Float   | 10                                  | The amount the value is incremented                    |
-| units           | String  | ""                                  | The units your value is displayed in                   |
-| priceUnits      | String  | ""                                  | Adds price ('$', '€', '£' ...) before value            |
-| radius          | Float   | 40 or (previous slider radius + previous slider lineWidth + default slider lineWidth)  | The radius of your slider  |
-| lineWidth       | Float   | 5                                   | The slider and arc width                               |
-| strokeColor     | String  | "#D3D3D3"                           | The color of the dashes on the slider                  |
-| ballColor       | String  | "#000000"                           | The color of the slider ball                           |
-| gradientFill    | Boolean | true                                | Specify whether you would like the image in the center (for specified type) of the slider to fill with the slider's color as you scale the slider |
-| legend          | Boolean | true                                | Specify whether you would like the slider name, value and units listed in the top left corner of the canvas |
-| legendFont      | Boolean | "12px Arial"                        | Specify the font for the slider legend                 |
-| legendColor     | String  | "#000000"                           | The color of the slider legend                         |
-
-Retrieve values of individual sliders by calling:
-
-    $('#sliders').data('slider_name');
+For more options and style customization, please, see [Jquery Circular Sliders](https://github.com/speterlin/jquery.circular-sliders)
 
 <!-- ## Development -->
 

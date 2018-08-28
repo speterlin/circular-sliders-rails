@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Sebastian Peterlin"]
   spec.email         = ["speterlin@gmail.com"]
 
-  spec.summary       = %q{Draw concentric circles and responsively set each value.}
-  spec.description   = %q{A Ruby on Rails gem which allows you to draw concentric responsive circular sliders with jQuery. Requires jQuery.}
+  spec.summary       = %q{Provides jQuery Circular Sliders for Rails Asset Pipeline.}
+  spec.description   = %q{Provides jQuery Circular Sliders for Rails Asset Pipeline.}
   spec.homepage      = "https://github.com/speterlin/circular-sliders-rails"
   spec.license       = "MIT"
 
@@ -27,9 +27,9 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "railties", ">= 3.2.0"
+
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
-
-  spec.add_dependency "rails", "~> 5.0"
 end
