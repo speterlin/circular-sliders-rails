@@ -1,4 +1,5 @@
-improvements.txt
+/.bundle/
+/pkg/
+/tmp/
 Gemfile.lock
-pkg/
-.DS_Store
+improvements.txt
