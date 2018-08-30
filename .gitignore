@@ -1,1 +1,4 @@
 improvements.txt
+Gemfile.lock
+pkg/
+.DS_Store
